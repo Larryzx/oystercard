@@ -26,16 +26,22 @@ describe Oystercard do
     end
 
     describe 'touch_in' do
-       it 'sets in journey to true' do
-         # set instance variable here
-         expect(subject.touch_in).to eq true
+       it 'raises an error if minimum balance is less than £1' do
+         expect{subject.touch_in}.to raise_error "Insufficient funds"
+       end
+       it 'allows a user to touch in' do
+         subject.top_up(5)
+         subject.touch_in
+         expect(subject.in_journey?).to eq(true)
       end
     end
 
-    describe 'touch_out' do
+     describe 'touch_out' do
       it 'allows a user to touch out' do
-        expect(subject.touch_out).to eq false
-      end
-    end
-
+        subject.top_up(5)
+        subject.touch_in
+        subject.touch_out
+        expect(subject.in_journey?).to eq false
+     end
+   end
 end
